@@ -33,7 +33,7 @@ namespace MicroPatch
             this.button2 = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.windowTitle = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.infoBox = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // patch
@@ -84,18 +84,18 @@ namespace MicroPatch
             this.windowTitle.Text = "MicroPatch v1.1 | PaNtHer";
             this.windowTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // label1
+            // infoBox
             // 
-            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.label1.Font = new System.Drawing.Font("Source Sans Pro", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(2, 26);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(396, 94);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Status: Waiting\r\n\r\nPlease select a patch file.";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            this.infoBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.infoBox.Font = new System.Drawing.Font("Source Sans Pro", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.infoBox.ForeColor = System.Drawing.Color.White;
+            this.infoBox.Location = new System.Drawing.Point(2, 26);
+            this.infoBox.Name = "infoBox";
+            this.infoBox.Size = new System.Drawing.Size(396, 94);
+            this.infoBox.TabIndex = 4;
+            this.infoBox.Text = "Status: Waiting\r\n\r\nPlease select a patch file.";
+            this.infoBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.infoBox.Click += new System.EventHandler(this.label1_Click);
             // 
             // MicroPatch
             // 
@@ -104,7 +104,7 @@ namespace MicroPatch
             this.BackColor = System.Drawing.Color.Lime;
             this.BackgroundImage = global::MicroPatch.Properties.Resources.bg1;
             this.ClientSize = new System.Drawing.Size(400, 200);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.infoBox);
             this.Controls.Add(this.windowTitle);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.button2);
@@ -129,7 +129,7 @@ namespace MicroPatch
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label windowTitle;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label infoBox;
     }
 }
 

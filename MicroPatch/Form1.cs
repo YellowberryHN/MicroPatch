@@ -32,7 +32,10 @@ namespace MicroPatch
                     return Assembly.Load(assemblyData);
                 }
             };
+
             InitializeComponent();
+
+            patch.Enabled = false;
         }
 
         protected override void WndProc(ref Message m)
@@ -51,12 +54,13 @@ namespace MicroPatch
         private const int WM_NCHITTEST = 0x84;
         private const int HT_CLIENT = 0x1;
         private const int HT_CAPTION = 0x2;
-        protected int lastX = 0;
-        protected int lastY = 0;
-        protected string lastFilename = String.Empty;
-        protected DragDropEffects effect;
-        protected bool validData;
+        protected string filepath = String.Empty;
         private bool patching;
+
+        public void Message(string msg, string status)
+        {
+            
+        }
 
         public void Form1_Load(object sender, EventArgs e)
         {
@@ -88,7 +92,7 @@ namespace MicroPatch
         {
             if (!patching)
             {
-                Stream myStream = null;
+                //Stream myStream = null;
                 OpenFileDialog openFileDialog1 = new OpenFileDialog();
 
                 openFileDialog1.InitialDirectory = Directory.GetCurrentDirectory();
@@ -98,7 +102,7 @@ namespace MicroPatch
 
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    try
+                    /*try
                     {
                         if ((myStream = openFileDialog1.OpenFile()) != null)
                         {
@@ -111,7 +115,9 @@ namespace MicroPatch
                     catch (Exception ex)
                     {
                         MessageBox.Show("Error 6: Could not read patch file from disk. Original error: " + ex.Message);
-                    }
+                    }*/
+                    filepath = openFileDialog1.FileName;
+                    patch.Enabled = true;
                 }
             }
         }
@@ -123,6 +129,7 @@ namespace MicroPatch
                 patching = true;
                 patch.Enabled = false;
                 patch.Text = "Patching...";
+                Message(TextRes.,"");
                 PatcherMain.PatchInit("");
             }
         }
