@@ -28,10 +28,12 @@ namespace MicroPatch
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MicroPatch));
             this.patch = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.windowTitle = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // patch
@@ -45,6 +47,7 @@ namespace MicroPatch
             this.patch.TabIndex = 0;
             this.patch.Text = "Patch";
             this.patch.UseVisualStyleBackColor = false;
+            this.patch.Click += new System.EventHandler(this.patch_Click);
             // 
             // button2
             // 
@@ -66,7 +69,6 @@ namespace MicroPatch
             this.progressBar1.Size = new System.Drawing.Size(376, 23);
             this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar1.TabIndex = 2;
-            this.progressBar1.Click += new System.EventHandler(this.progressBar1_Click);
             // 
             // windowTitle
             // 
@@ -81,7 +83,16 @@ namespace MicroPatch
             this.windowTitle.TabIndex = 3;
             this.windowTitle.Text = "MicroPatch v1.1 | PaNtHer";
             this.windowTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.windowTitle.Click += new System.EventHandler(this.windowTitle_Click);
+            // 
+            // label1
+            // 
+            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.label1.Location = new System.Drawing.Point(2, 26);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(396, 94);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "label1";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // MicroPatch
             // 
@@ -90,14 +101,17 @@ namespace MicroPatch
             this.BackColor = System.Drawing.Color.Lime;
             this.BackgroundImage = global::MicroPatch.Properties.Resources.bg1;
             this.ClientSize = new System.Drawing.Size(400, 200);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.windowTitle);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.patch);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MicroPatch";
             this.ShowIcon = false;
             this.Text = "MicroPatch v1.1";
+            this.TopMost = true;
             this.TransparencyKey = System.Drawing.Color.Lime;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -112,6 +126,7 @@ namespace MicroPatch
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label windowTitle;
+        private System.Windows.Forms.Label label1;
     }
 }
 
