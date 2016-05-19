@@ -6,11 +6,13 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Ionic.Zip;
 
 namespace MicroPatch
 {
@@ -18,6 +20,18 @@ namespace MicroPatch
     {
         public MicroPatch()
         {
+            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+            {
+                string resourceName = new AssemblyName(args.Name).Name + ".dll";
+                string resource = Array.Find(this.GetType().Assembly.GetManifestResourceNames(), element => element.EndsWith(resourceName));
+
+                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource))
+                {
+                    Byte[] assemblyData = new Byte[stream.Length];
+                    stream.Read(assemblyData, 0, assemblyData.Length);
+                    return Assembly.Load(assemblyData);
+                }
+            };
             InitializeComponent();
         }
 
@@ -66,7 +80,7 @@ namespace MicroPatch
             }
             else
             {
-                MessageBox.Show("Error 7: Please do not close the program while patching is ongoing.", "MicroPatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error 7: Could not close the program while patching is ongoing.", "MicroPatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -79,7 +93,7 @@ namespace MicroPatch
 
                 openFileDialog1.InitialDirectory = Directory.GetCurrentDirectory();
                 openFileDialog1.Filter = "Patch files (*.mvp; *.mpp; *.microvolts)|*.mvp;*.mpp;*.microvolts|All files (*.*)|*.*";
-                openFileDialog1.FilterIndex = 2;
+                openFileDialog1.FilterIndex = 1;
                 openFileDialog1.RestoreDirectory = true;
 
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
@@ -96,7 +110,7 @@ namespace MicroPatch
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
+                        MessageBox.Show("Error 6: Could not read patch file from disk. Original error: " + ex.Message);
                     }
                 }
             }
@@ -109,6 +123,7 @@ namespace MicroPatch
                 patching = true;
                 patch.Enabled = false;
                 patch.Text = "Patching...";
+                PatcherMain.PatchInit("");
             }
         }
     }

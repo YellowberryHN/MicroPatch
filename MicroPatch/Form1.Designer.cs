@@ -87,11 +87,14 @@ namespace MicroPatch
             // label1
             // 
             this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.label1.Font = new System.Drawing.Font("Source Sans Pro", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(2, 26);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(396, 94);
             this.label1.TabIndex = 4;
-            this.label1.Text = "label1";
+            this.label1.Text = "Status: Waiting\r\n\r\nPlease select a patch file.";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // MicroPatch
