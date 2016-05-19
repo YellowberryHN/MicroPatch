@@ -49,7 +49,6 @@ namespace MicroPatch
             Music.BASSMOD_Init(-1, 44100, BASSMOD_BASSInit.BASS_DEVICE_DEFAULT);
             Music.BASSMOD_MusicLoad(true, Properties.Resources.freedom,0,0, BASSMOD_BASSMusic.BASS_MUSIC_LOOP | BASSMOD_BASSMusic.BASS_MUSIC_RAMP | BASSMOD_BASSMusic.BASS_MUSIC_SURROUND2);
             Music.BASSMOD_MusicPlay();
-            ModifyProgressBarColor.SetState(progressBar1, 2);
             progressBar1.Value = 50;
 
         }
