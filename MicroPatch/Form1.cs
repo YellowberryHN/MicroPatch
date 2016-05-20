@@ -76,7 +76,6 @@ namespace MicroPatch
 
         public void Message(string msg, string status)
         {
-            infoBox.Cursor = Cursors.Default;
             infoBox.Text = msg+Environment.NewLine+Environment.NewLine+"Status: "+status;
         }
 
@@ -126,6 +125,7 @@ namespace MicroPatch
                 {
                     filepath = openFileDialog1.FileName;
                     patch.Enabled = true;
+                    infoBox.Cursor = Cursors.Default;
                 }
             }
         }
@@ -232,16 +232,15 @@ namespace MicroPatch
 
                         BackgroundWorker worker = new BackgroundWorker();
                         worker.WorkerReportsProgress = true;
-                        worker.ProgressChanged += (o, e) => { };
+                        worker.ProgressChanged += (o, e) => { Message(TextRes.patching, "Extracting Game Files... " + e.ProgressPercentage + "%"); };
                         worker.DoWork += (o, e) =>
                         {
                             using (zip)
                             {
                                 int step = (zip.Count / 100);
-                                int percentComplete = 0;
+                                //int percentComplete = 0;
                                 foreach (ZipEntry fuck in zip)
                                 {
-                                    Message(TextRes.patching, "Extracting Game Files... " + percentComplete +"%");
                                     Debug.WriteLine(fuck.FileName);
                                     fuck.Extract(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/", ExtractExistingFileAction.DoNotOverwrite);
                                 }
@@ -251,9 +250,19 @@ namespace MicroPatch
                         worker.RunWorkerAsync();
 
                         ZipFile gameFile = new ZipFile();
-                        IEnumerable<String> files = Directory.EnumerateFileSystemEntries(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/");
+                        IEnumerable<string> filesTemp = Directory.EnumerateFileSystemEntries(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/");
+                        IEnumerable<string> files = null;
                         Debug.WriteLine("Adding Files");
-                        gameFile.AddFiles(files);
+                        foreach (string h in filesTemp)
+                        {
+                            if (File.Exists(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/" + h))
+                            {
+                                gameFile.AddFile(h);
+                            }
+                            else if (Directory.Exists(h);
+                                
+                            }
+                        }
                         Debug.WriteLine("Saving");
                         gameFile.Save(s);
                         Debug.WriteLine("Done");
