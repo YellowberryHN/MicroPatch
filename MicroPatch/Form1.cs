@@ -24,6 +24,8 @@ namespace MicroPatch
         private const int HT_CAPTION = 0x2;
         protected string filepath = String.Empty;
         public bool patching;
+        public bool patchfail = false;
+        public string tempdir = System.IO.Path.GetTempPath() + "/MVP/PATCH/";
         public string gamedir = 
             Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + "/Steam/steamapps/common/MicroVolts";
         private bool music = true;
@@ -116,7 +118,7 @@ namespace MicroPatch
                 OpenFileDialog openFileDialog1 = new OpenFileDialog();
 
                 openFileDialog1.InitialDirectory = Directory.GetCurrentDirectory();
-                openFileDialog1.Filter = "Patch files (*.mvp; *.mpp; *.microvolts)|*.mvp;*.mpp;*.microvolts|All files (*.*)|*.*";
+                openFileDialog1.Filter = "Patch files (*.mvp; *.mpp)|*.mvp;*.mpp|All files (*.*)|*.*";
                 openFileDialog1.FilterIndex = 1;
                 openFileDialog1.RestoreDirectory = true;
 
@@ -175,7 +177,7 @@ namespace MicroPatch
                     {
                         Message(TextRes.patching, "Extracting Patch...");
                         Debug.WriteLine(e.FileName);
-                        e.Extract(System.IO.Path.GetTempPath() + "/MVP/PATCH/", ExtractExistingFileAction.OverwriteSilently);
+                        e.Extract(tempdir, ExtractExistingFileAction.OverwriteSilently);
                     }
                 }
                 PatchPrepareFiles(gamedir);
@@ -184,6 +186,7 @@ namespace MicroPatch
             {
                 MessageBox.Show(ex.Message);
                 patching = false;
+                patchfail = true;
                 Message(TextRes.fail, "ERROR: FILE NOT PATCH.");
             }
         }
@@ -195,25 +198,25 @@ namespace MicroPatch
 
             //System.IO.File.
 
-            foreach (string e in datafolder)
+            foreach (string s in datafolder)
             {
-                if (System.IO.Path.GetExtension(e) == ".dat")
+                if (System.IO.Path.GetExtension(s) == ".dat")
                 {
-                    Debug.WriteLine("File Select: " + e);
-                    if (!System.IO.File.Exists(e + ".bkup"))
+                    Debug.WriteLine("File Select: " + s);
+                    if (!System.IO.File.Exists(s + ".bkup"))
                     {
-                        System.IO.File.Copy(e, e + ".bkup");
-                        Debug.WriteLine(e + ".bkup created");
+                        System.IO.File.Copy(s, s + ".bkup");
+                        Debug.WriteLine(s + ".bkup created");
                     }
-                    if (ZipFile.IsZipFile(e))
+                    if (ZipFile.IsZipFile(s))
                     {
-                        String[] filenames = { };
-                        ZipFile zip = ZipFile.Read(e);
-                        foreach (string f in zip.EntryFileNames)
+                        //String[] filenames = { };
+                        ZipFile zip = ZipFile.Read(s);
+                        /*foreach (string f in zip.EntryFileNames)
                         {
                             Debug.WriteLine("Jews: " + f);
-                            //if (File.ReadAllBytes(f) == File.Rea(System.IO.Path.GetTempPath() + "/MVP/PATCH/"+Path.GetFileNameWithoutExtension(e).ToUpper()))
-                            if (File.Exists(System.IO.Path.GetTempPath() + "/MVP/PATCH/" + Path.GetFileNameWithoutExtension(e).ToUpper() + "/" + Path.GetFileName(f)))
+                            //if (File.ReadAllBytes(f) == File.Rea(System.IO.Path.GetTempPath() + "/MVP/PATCH/"+Path.GetFileNameWithoutExtension(s).ToUpper()))
+                            if (File.Exists(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/" + Path.GetFileName(f)))
                             {
                                 Debug.WriteLine("Show me the money");
                                 Array.Resize(ref filenames, filenames.Length + 1);
@@ -223,9 +226,36 @@ namespace MicroPatch
                         foreach (string k in filenames)
                         {
                             zip.RemoveEntry(k);
-                            zip.AddFile(System.IO.Path.GetTempPath() + "/MVP/PATCH/" + Path.GetFileNameWithoutExtension(e).ToUpper() + "/" + k);
-                        }
-                        zip.Save(e);
+                            zip.AddFile(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/" + k);
+                        }*/
+
+
+                        BackgroundWorker worker = new BackgroundWorker();
+                        worker.WorkerReportsProgress = true;
+                        worker.ProgressChanged += (o, e) => { };
+                        worker.DoWork += (o, e) =>
+                        {
+                            using (zip)
+                            {
+                                int step = (zip.Count / 100);
+                                int percentComplete = 0;
+                                foreach (ZipEntry fuck in zip)
+                                {
+                                    Message(TextRes.patching, "Extracting Game Files... " + percentComplete +"%");
+                                    Debug.WriteLine(fuck.FileName);
+                                    fuck.Extract(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/", ExtractExistingFileAction.DoNotOverwrite);
+                                }
+                            }
+                        };
+
+                        worker.RunWorkerAsync();
+
+                        ZipFile gameFile = new ZipFile();
+                        IEnumerable<String> files = Directory.EnumerateFileSystemEntries(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/");
+                        Debug.WriteLine("Adding Files");
+                        gameFile.AddFiles(files);
+                        Debug.WriteLine("Saving");
+                        gameFile.Save(s);
                         Debug.WriteLine("Done");
                     }
 
