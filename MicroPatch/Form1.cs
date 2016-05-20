@@ -26,6 +26,7 @@ namespace MicroPatch
         public bool patching;
         public string gamedir = 
             Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + "/Steam/steamapps/common/MicroVolts";
+        private bool music = false;
 
         public MicroPatch()
         {
@@ -66,9 +67,12 @@ namespace MicroPatch
 
         public void Form1_Load(object sender, EventArgs e)
         {
-            Music.BASSMOD_Init(-1, 44100, BASSMOD_BASSInit.BASS_DEVICE_DEFAULT);
-            Music.BASSMOD_MusicLoad(true, Properties.Resources.freedom,0,0, BASSMOD_BASSMusic.BASS_MUSIC_LOOP | BASSMOD_BASSMusic.BASS_MUSIC_RAMP | BASSMOD_BASSMusic.BASS_MUSIC_SURROUND2);
-            Music.BASSMOD_MusicPlay();
+            if (music)
+            {
+                Music.BASSMOD_Init(-1, 44100, BASSMOD_BASSInit.BASS_DEVICE_DEFAULT);
+                Music.BASSMOD_MusicLoad(true, Properties.Resources.freedom, 0, 0, BASSMOD_BASSMusic.BASS_MUSIC_LOOP | BASSMOD_BASSMusic.BASS_MUSIC_RAMP | BASSMOD_BASSMusic.BASS_MUSIC_SURROUND2);
+                Music.BASSMOD_MusicPlay();
+            }
 
         }
 
@@ -120,12 +124,31 @@ namespace MicroPatch
             }
         }
 
+        public static void DeleteDirectory(string target_dir)
+        {
+            string[] files = Directory.GetFiles(target_dir);
+            string[] dirs = Directory.GetDirectories(target_dir);
+
+            foreach (string file in files)
+            {
+                File.SetAttributes(file, FileAttributes.Normal);
+                File.Delete(file);
+            }
+
+            foreach (string dir in dirs)
+            {
+                DeleteDirectory(dir);
+            }
+
+            Directory.Delete(target_dir, false);
+        }
+
         public void PatchInit(string patchfile)
         {
             if (Directory.Exists(System.IO.Path.GetTempPath() + "/MVP"))
             {
                 Message(TextRes.patching, "Clearing Temporary Files...");
-                Directory.Delete(System.IO.Path.GetTempPath() + "/MVP", true);
+                DeleteDirectory(System.IO.Path.GetTempPath() + "/MVP");
             }
 
             ZipFile zip = ZipFile.Read(patchfile);
@@ -160,17 +183,23 @@ namespace MicroPatch
                     }
                     if (ZipFile.IsZipFile(e))
                     {
+                        String[] filenames = { };
                         ZipFile zip = ZipFile.Read(e);
                         foreach (string f in zip.EntryFileNames)
                         {
                             Debug.WriteLine("Jews: " + f);
                             //if (File.ReadAllBytes(f) == File.Rea(System.IO.Path.GetTempPath() + "/MVP/PATCH/"+Path.GetFileNameWithoutExtension(e).ToUpper()))
-                            if (File.Exists(System.IO.Path.GetTempPath() + "/MVP/PATCH/" + Path.GetFileNameWithoutExtension(e).ToUpper()+"/"+Path.GetFileName(f)))
+                            if (File.Exists(System.IO.Path.GetTempPath() + "/MVP/PATCH/" + Path.GetFileNameWithoutExtension(e).ToUpper() + "/" + Path.GetFileName(f)))
                             {
                                 Debug.WriteLine("Show me the money");
-                                zip.RemoveEntry(Path.GetFileName(f));
-                                zip.AddFile(System.IO.Path.GetTempPath() + "/MVP/PATCH/" + Path.GetFileNameWithoutExtension(e).ToUpper() + "/" + Path.GetFileName(f));
+                                Array.Resize(ref filenames, filenames.Length + 1);
+                                filenames[filenames.Length - 1] = Path.GetFileName(f);
                             }
+                        }
+                        foreach (string k in filenames)
+                        {
+                            zip.RemoveEntry(k);
+                            zip.AddFile(System.IO.Path.GetTempPath() + "/MVP/PATCH/" + Path.GetFileNameWithoutExtension(e).ToUpper() + "/" + k);
                         }
                         zip.Save(e);
                         Debug.WriteLine("Done");
@@ -182,6 +211,11 @@ namespace MicroPatch
                     }
                 }
             }
+        }
+
+        private void windowTitle_Click(object sender, EventArgs e)
+        {
+            Application.Run(new AboutBox1());
         }
     }
 }

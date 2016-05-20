@@ -83,6 +83,7 @@ namespace MicroPatch
             this.windowTitle.TabIndex = 3;
             this.windowTitle.Text = "MicroPatch v1.1 | PaNtHer";
             this.windowTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.windowTitle.Click += new System.EventHandler(this.windowTitle_Click);
             // 
             // infoBox
             // 
