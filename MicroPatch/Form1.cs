@@ -18,6 +18,15 @@ namespace MicroPatch
 {
     public partial class MicroPatch : Form
     {
+        private const int WM_NCLBUTTONDBLCLK = 0x00A3; //double click on a title bar a.k.a. non-client area of the form
+        private const int WM_NCHITTEST = 0x84;
+        private const int HT_CLIENT = 0x1;
+        private const int HT_CAPTION = 0x2;
+        protected string filepath = String.Empty;
+        public bool patching;
+        public string gamedir = 
+            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + "/Steam/steamapps/common/MicroVolts";
+
         public MicroPatch()
         {
             AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
@@ -50,13 +59,6 @@ namespace MicroPatch
                 m.Result = (IntPtr)(HT_CAPTION);
         }
 
-        private const int WM_NCLBUTTONDBLCLK = 0x00A3; //double click on a title bar a.k.a. non-client area of the form
-        private const int WM_NCHITTEST = 0x84;
-        private const int HT_CLIENT = 0x1;
-        private const int HT_CAPTION = 0x2;
-        protected string filepath = String.Empty;
-        public bool patching;
-
         public void Message(string msg, string status)
         {
             infoBox.Text = msg+Environment.NewLine+Environment.NewLine+"Status: "+status;
@@ -67,9 +69,6 @@ namespace MicroPatch
             Music.BASSMOD_Init(-1, 44100, BASSMOD_BASSInit.BASS_DEVICE_DEFAULT);
             Music.BASSMOD_MusicLoad(true, Properties.Resources.freedom,0,0, BASSMOD_BASSMusic.BASS_MUSIC_LOOP | BASSMOD_BASSMusic.BASS_MUSIC_RAMP | BASSMOD_BASSMusic.BASS_MUSIC_SURROUND2);
             Music.BASSMOD_MusicPlay();
-
-            //Debug.WriteLine(System.IO.Path.GetTempPath());
-
             progressBar1.Value = 50;
 
         }
@@ -95,7 +94,6 @@ namespace MicroPatch
         {
             if (!patching)
             {
-                //Stream myStream = null;
                 OpenFileDialog openFileDialog1 = new OpenFileDialog();
 
                 openFileDialog1.InitialDirectory = Directory.GetCurrentDirectory();
@@ -105,20 +103,6 @@ namespace MicroPatch
 
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    /*try
-                    {
-                        if ((myStream = openFileDialog1.OpenFile()) != null)
-                        {
-                            using (myStream)
-                            {
-                                // Insert code to read the stream here.
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error 6: Could not read patch file from disk. Original error: " + ex.Message);
-                    }*/
                     filepath = openFileDialog1.FileName;
                     patch.Enabled = true;
                 }
@@ -133,7 +117,58 @@ namespace MicroPatch
                 patch.Enabled = false;
                 patch.Text = "Patching...";
                 Message(TextRes.patching,"Loading...");
-                PatcherMain.PatchInit(filepath);
+                PatchInit(filepath);
+            }
+        }
+
+        public void PatchInit(string patchfile)
+        {
+            if (Directory.Exists(System.IO.Path.GetTempPath() + "/MVP"))
+            {
+                Message(TextRes.patching, "Clearing Temporary Files...");
+                Directory.Delete(System.IO.Path.GetTempPath() + "/MVP", true);
+            }
+
+            ZipFile zip = ZipFile.Read(patchfile);
+            using (zip)
+            {
+                foreach (ZipEntry e in zip)
+                {
+                    Message(TextRes.patching, "Extracting Patch...");
+                    Debug.WriteLine(e.FileName);
+                    e.Extract(System.IO.Path.GetTempPath() + "/MVP/PATCH/", ExtractExistingFileAction.OverwriteSilently);
+                }
+            }
+            PatchPrepareFiles(gamedir);
+        }
+
+        public void PatchPrepareFiles(string mvdir)
+        {
+            Message(TextRes.patching, "Preparing Game Files...");
+            Array datafolder = Directory.GetFiles(mvdir+"/data");
+
+            System.IO.File.
+
+            foreach (string e in datafolder)
+            {
+                if (System.IO.Path.GetExtension(e) == ".dat")
+                {
+                    if (!System.IO.File.Exists(e + ".bkup"))
+                    {
+                        System.IO.File.Copy(e, e + ".bkup");
+                    }
+                    if (ZipFile.IsZipFile(e))
+                    {
+                        ZipFile zip = ZipFile.Read(e);
+                        foreach (string f in ) ;
+                    }
+
+                    else
+                    {
+                        //Figure out how the fuck to rewrite the BMS file.
+                        break;
+                    }
+                }
             }
         }
     }
