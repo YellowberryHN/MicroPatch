@@ -69,7 +69,6 @@ namespace MicroPatch
             Music.BASSMOD_Init(-1, 44100, BASSMOD_BASSInit.BASS_DEVICE_DEFAULT);
             Music.BASSMOD_MusicLoad(true, Properties.Resources.freedom,0,0, BASSMOD_BASSMusic.BASS_MUSIC_LOOP | BASSMOD_BASSMusic.BASS_MUSIC_RAMP | BASSMOD_BASSMusic.BASS_MUSIC_SURROUND2);
             Music.BASSMOD_MusicPlay();
-            progressBar1.Value = 50;
 
         }
 
@@ -147,26 +146,39 @@ namespace MicroPatch
             Message(TextRes.patching, "Preparing Game Files...");
             Array datafolder = Directory.GetFiles(mvdir+"/data");
 
-            System.IO.File.
+            //System.IO.File.
 
             foreach (string e in datafolder)
             {
                 if (System.IO.Path.GetExtension(e) == ".dat")
                 {
+                    Debug.WriteLine("File Select: " + e);
                     if (!System.IO.File.Exists(e + ".bkup"))
                     {
                         System.IO.File.Copy(e, e + ".bkup");
+                        Debug.WriteLine(e + ".bkup created");
                     }
                     if (ZipFile.IsZipFile(e))
                     {
                         ZipFile zip = ZipFile.Read(e);
-                        foreach (string f in ) ;
+                        foreach (string f in zip.EntryFileNames)
+                        {
+                            Debug.WriteLine("Jews: " + f);
+                            //if (File.ReadAllBytes(f) == File.Rea(System.IO.Path.GetTempPath() + "/MVP/PATCH/"+Path.GetFileNameWithoutExtension(e).ToUpper()))
+                            if (File.Exists(System.IO.Path.GetTempPath() + "/MVP/PATCH/" + Path.GetFileNameWithoutExtension(e).ToUpper()+"/"+Path.GetFileName(f)))
+                            {
+                                Debug.WriteLine("Show me the money");
+                                zip.RemoveEntry(Path.GetFileName(f));
+                                zip.AddFile(System.IO.Path.GetTempPath() + "/MVP/PATCH/" + Path.GetFileNameWithoutExtension(e).ToUpper() + "/" + Path.GetFileName(f));
+                            }
+                        }
+                        zip.Save(e);
+                        Debug.WriteLine("Done");
                     }
 
                     else
                     {
                         //Figure out how the fuck to rewrite the BMS file.
-                        break;
                     }
                 }
             }
