@@ -26,7 +26,7 @@ namespace MicroPatch
         public bool patching;
         public string gamedir = 
             Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + "/Steam/steamapps/common/MicroVolts";
-        private bool music = false;
+        private bool music = true;
 
         public MicroPatch()
         {
@@ -48,6 +48,18 @@ namespace MicroPatch
             patch.Enabled = false;
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.Alt | Keys.H))
+            {
+                Debug.WriteLine("<CTRL> + Alt + H Captured");
+                Form about = new About();
+                about.Show();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == WM_NCLBUTTONDBLCLK)
@@ -62,6 +74,7 @@ namespace MicroPatch
 
         public void Message(string msg, string status)
         {
+            infoBox.Cursor = Cursors.Default;
             infoBox.Text = msg+Environment.NewLine+Environment.NewLine+"Status: "+status;
         }
 
@@ -78,7 +91,10 @@ namespace MicroPatch
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Music.BASSMOD_Free();
+            if (music)
+            {
+                Music.BASSMOD_Free();
+            }
         }
 
         private void closeButton_MouseDown(object sender, MouseEventArgs e)
@@ -150,18 +166,26 @@ namespace MicroPatch
                 Message(TextRes.patching, "Clearing Temporary Files...");
                 DeleteDirectory(System.IO.Path.GetTempPath() + "/MVP");
             }
-
-            ZipFile zip = ZipFile.Read(patchfile);
-            using (zip)
+            try
             {
-                foreach (ZipEntry e in zip)
+                ZipFile zip = ZipFile.Read(patchfile);
+                using (zip)
                 {
-                    Message(TextRes.patching, "Extracting Patch...");
-                    Debug.WriteLine(e.FileName);
-                    e.Extract(System.IO.Path.GetTempPath() + "/MVP/PATCH/", ExtractExistingFileAction.OverwriteSilently);
+                    foreach (ZipEntry e in zip)
+                    {
+                        Message(TextRes.patching, "Extracting Patch...");
+                        Debug.WriteLine(e.FileName);
+                        e.Extract(System.IO.Path.GetTempPath() + "/MVP/PATCH/", ExtractExistingFileAction.OverwriteSilently);
+                    }
                 }
+                PatchPrepareFiles(gamedir);
             }
-            PatchPrepareFiles(gamedir);
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                patching = false;
+                Message(TextRes.fail, "ERROR: FILE NOT PATCH.");
+            }
         }
 
         public void PatchPrepareFiles(string mvdir)
@@ -211,11 +235,6 @@ namespace MicroPatch
                     }
                 }
             }
-        }
-
-        private void windowTitle_Click(object sender, EventArgs e)
-        {
-            Application.Run(new AboutBox1());
         }
     }
 }

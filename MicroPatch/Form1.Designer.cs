@@ -83,11 +83,11 @@ namespace MicroPatch
             this.windowTitle.TabIndex = 3;
             this.windowTitle.Text = "MicroPatch v1.1 | PaNtHer";
             this.windowTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.windowTitle.Click += new System.EventHandler(this.windowTitle_Click);
             // 
             // infoBox
             // 
             this.infoBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.infoBox.Cursor = System.Windows.Forms.Cursors.Hand;
             this.infoBox.Font = new System.Drawing.Font("Source Sans Pro", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.infoBox.ForeColor = System.Drawing.Color.White;
             this.infoBox.Location = new System.Drawing.Point(2, 26);
@@ -113,9 +113,10 @@ namespace MicroPatch
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MicroPatch";
+            this.Opacity = 0.9D;
             this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MicroPatch v1.1";
-            this.TopMost = true;
             this.TransparencyKey = System.Drawing.Color.Lime;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);

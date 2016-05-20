@@ -13,8 +13,8 @@ namespace MicroPatch
             return;
         }
 
-        public static string fail = "Patching Failed!";
-        public static string idle = "Waiting";
+        public static string fail = "Patching Failed! Please Restart.";
+        public static string idle = "Waiting...";
         public static string wait = "Please Wait...";
         public static string patching = "Patching Files...";
     }
