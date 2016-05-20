@@ -6,19 +6,16 @@ using System.Threading.Tasks;
 
 namespace MicroPatch
 {
-    public class MPString_Status
-    {
-        public string fail = "Patching Failed!";
-        public string idle = "Waiting";
-        public string wait = "Please Wait...";
-        public string patching = "Patching Files...";
-    }
-
     class TextRes
     {
         public static void Main()
         {
             return;
         }
+
+        public static string fail = "Patching Failed!";
+        public static string idle = "Waiting";
+        public static string wait = "Please Wait...";
+        public static string patching = "Patching Files...";
     }
 }

@@ -117,9 +117,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <None Include="Resources\bg.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\bg1.png" />
   </ItemGroup>
   <ItemGroup>

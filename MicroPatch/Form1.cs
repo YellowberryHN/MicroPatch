@@ -55,11 +55,11 @@ namespace MicroPatch
         private const int HT_CLIENT = 0x1;
         private const int HT_CAPTION = 0x2;
         protected string filepath = String.Empty;
-        private bool patching;
+        public bool patching;
 
         public void Message(string msg, string status)
         {
-            
+            infoBox.Text = msg+Environment.NewLine+Environment.NewLine+"Status: "+status;
         }
 
         public void Form1_Load(object sender, EventArgs e)
@@ -67,6 +67,9 @@ namespace MicroPatch
             Music.BASSMOD_Init(-1, 44100, BASSMOD_BASSInit.BASS_DEVICE_DEFAULT);
             Music.BASSMOD_MusicLoad(true, Properties.Resources.freedom,0,0, BASSMOD_BASSMusic.BASS_MUSIC_LOOP | BASSMOD_BASSMusic.BASS_MUSIC_RAMP | BASSMOD_BASSMusic.BASS_MUSIC_SURROUND2);
             Music.BASSMOD_MusicPlay();
+
+            //Debug.WriteLine(System.IO.Path.GetTempPath());
+
             progressBar1.Value = 50;
 
         }
@@ -76,7 +79,7 @@ namespace MicroPatch
             Music.BASSMOD_Free();
         }
 
-        private void button2_MouseDown(object sender, MouseEventArgs e)
+        private void closeButton_MouseDown(object sender, MouseEventArgs e)
         {
             if (!patching)
             {
@@ -84,7 +87,7 @@ namespace MicroPatch
             }
             else
             {
-                MessageBox.Show("Error 7: Could not close the program while patching is ongoing.", "MicroPatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error 7: Cannot close the program while patching.", "MicroPatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -129,19 +132,9 @@ namespace MicroPatch
                 patching = true;
                 patch.Enabled = false;
                 patch.Text = "Patching...";
-                Message(TextRes.,"");
-                PatcherMain.PatchInit("");
+                Message(TextRes.patching,"Loading...");
+                PatcherMain.PatchInit(filepath);
             }
-        }
-    }
-
-    public static class ModifyProgressBarColor
-    {
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
-        static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr w, IntPtr l);
-        public static void SetState(this ProgressBar pBar, int state)
-        {
-            SendMessage(pBar.Handle, 1040, (IntPtr)state, IntPtr.Zero);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace MicroPatch
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MicroPatch));
             this.patch = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.closeButton = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.windowTitle = new System.Windows.Forms.Label();
             this.infoBox = new System.Windows.Forms.Label();
@@ -49,17 +49,17 @@ namespace MicroPatch
             this.patch.UseVisualStyleBackColor = false;
             this.patch.Click += new System.EventHandler(this.patch_Click);
             // 
-            // button2
+            // closeButton
             // 
-            this.button2.BackgroundImage = global::MicroPatch.Properties.Resources.close;
-            this.button2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.Location = new System.Drawing.Point(378, 2);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(20, 20);
-            this.button2.TabIndex = 1;
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button2_MouseDown);
+            this.closeButton.BackgroundImage = global::MicroPatch.Properties.Resources.close;
+            this.closeButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.closeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.closeButton.Location = new System.Drawing.Point(378, 2);
+            this.closeButton.Name = "closeButton";
+            this.closeButton.Size = new System.Drawing.Size(20, 20);
+            this.closeButton.TabIndex = 1;
+            this.closeButton.UseVisualStyleBackColor = true;
+            this.closeButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.closeButton_MouseDown);
             // 
             // progressBar1
             // 
@@ -93,7 +93,7 @@ namespace MicroPatch
             this.infoBox.Name = "infoBox";
             this.infoBox.Size = new System.Drawing.Size(396, 94);
             this.infoBox.TabIndex = 4;
-            this.infoBox.Text = "Status: Waiting\r\n\r\nPlease select a patch file.";
+            this.infoBox.Text = "Click here to select a patch file.\r\n\r\nStatus: Waiting";
             this.infoBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.infoBox.Click += new System.EventHandler(this.label1_Click);
             // 
@@ -107,7 +107,7 @@ namespace MicroPatch
             this.Controls.Add(this.infoBox);
             this.Controls.Add(this.windowTitle);
             this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.closeButton);
             this.Controls.Add(this.patch);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -126,7 +126,7 @@ namespace MicroPatch
         #endregion
 
         private System.Windows.Forms.Button patch;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button closeButton;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label windowTitle;
         private System.Windows.Forms.Label infoBox;
