@@ -208,69 +208,62 @@ namespace MicroPatch
                         System.IO.File.Copy(s, s + ".bkup");
                         Debug.WriteLine(s + ".bkup created");
                     }
-                    if (ZipFile.IsZipFile(s))
+                    if (Directory.Exists(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/"))
                     {
-                        //String[] filenames = { };
-                        ZipFile zip = ZipFile.Read(s);
-                        /*foreach (string f in zip.EntryFileNames)
+                        if (ZipFile.IsZipFile(s))
                         {
-                            Debug.WriteLine("Jews: " + f);
-                            //if (File.ReadAllBytes(f) == File.Rea(System.IO.Path.GetTempPath() + "/MVP/PATCH/"+Path.GetFileNameWithoutExtension(s).ToUpper()))
-                            if (File.Exists(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/" + Path.GetFileName(f)))
+                            //String[] filenames = { };
+                            ZipFile zip = ZipFile.Read(s);
+                            /*foreach (string f in zip.EntryFileNames)
                             {
-                                Debug.WriteLine("Show me the money");
-                                Array.Resize(ref filenames, filenames.Length + 1);
-                                filenames[filenames.Length - 1] = Path.GetFileName(f);
-                            }
-                        }
-                        foreach (string k in filenames)
-                        {
-                            zip.RemoveEntry(k);
-                            zip.AddFile(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/" + k);
-                        }*/
-
-
-                        BackgroundWorker worker = new BackgroundWorker();
-                        worker.WorkerReportsProgress = true;
-                        worker.ProgressChanged += (o, e) => { Message(TextRes.patching, "Extracting Game Files... " + e.ProgressPercentage + "%"); };
-                        worker.DoWork += (o, e) =>
-                        {
-                            using (zip)
-                            {
-                                int step = (zip.Count / 100);
-                                //int percentComplete = 0;
-                                foreach (ZipEntry fuck in zip)
+                                Debug.WriteLine("Jews: " + f);
+                                //if (File.ReadAllBytes(f) == File.Rea(System.IO.Path.GetTempPath() + "/MVP/PATCH/"+Path.GetFileNameWithoutExtension(s).ToUpper()))
+                                if (File.Exists(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/" + Path.GetFileName(f)))
                                 {
-                                    Debug.WriteLine(fuck.FileName);
-                                    fuck.Extract(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/", ExtractExistingFileAction.DoNotOverwrite);
+                                    Debug.WriteLine("Show me the money");
+                                    Array.Resize(ref filenames, filenames.Length + 1);
+                                    filenames[filenames.Length - 1] = Path.GetFileName(f);
                                 }
                             }
-                        };
-
-                        worker.RunWorkerAsync();
-
-                        ZipFile gameFile = new ZipFile();
-                        IEnumerable<string> filesTemp = Directory.EnumerateFileSystemEntries(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/");
-                        IEnumerable<string> files = null;
-                        Debug.WriteLine("Adding Files");
-                        foreach (string h in filesTemp)
-                        {
-                            if (File.Exists(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/" + h))
+                            foreach (string k in filenames)
                             {
-                                gameFile.AddFile(h);
-                            }
-                            else if (Directory.Exists(h);
-                                
-                            }
-                        }
-                        Debug.WriteLine("Saving");
-                        gameFile.Save(s);
-                        Debug.WriteLine("Done");
-                    }
+                                zip.RemoveEntry(k);
+                                zip.AddFile(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/" + k);
+                            }*/
 
-                    else
-                    {
-                        //Figure out how the fuck to rewrite the BMS file.
+
+                            BackgroundWorker worker = new BackgroundWorker();
+                            worker.WorkerReportsProgress = true;
+                            worker.ProgressChanged += (o, e) => { Message(TextRes.patching, "Extracting Game Files... " + e.ProgressPercentage + "%"); };
+                            worker.DoWork += (o, e) =>
+                            {
+                                using (zip)
+                                {
+                                    int step = (zip.Count / 100);
+                                    //int percentComplete = 0;
+                                    foreach (ZipEntry fuck in zip)
+                                    {
+                                        Debug.WriteLine(fuck.FileName);
+                                        fuck.Extract(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/", ExtractExistingFileAction.DoNotOverwrite);
+                                    }
+                                }
+                            };
+
+                            worker.RunWorkerAsync();
+
+                            ZipFile gameFile = new ZipFile();
+                            Debug.WriteLine("Adding Files");
+                            zip.AddDirectory(tempdir + Path.GetFileNameWithoutExtension(s).ToUpper() + "/", "");
+                            Debug.WriteLine("Saving");
+                            File.Delete(s);
+                            gameFile.Save(s);
+                            Debug.WriteLine("Done");
+                        }
+
+                        else
+                        {
+                            //Figure out how the fuck to rewrite the BMS file.
+                        }
                     }
                 }
             }
